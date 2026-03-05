@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Partial template used by the controller to render ecotax lines as HTML -->
+    <template id="ecotax_amounts">
+        <t t-foreach="ecotax_amounts" t-as="ecotax">
+            <div class="o_ecotax_line text-muted small">
+                dont <t t-esc="ecotax['name']"/> :
+                <span t-out="ecotax['amount']"
+                      t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Product page: display ecotax amounts below price (updated by JS on variant change) -->
+    <template
+        id="product_price_ecotax"
+        inherit_id="website_sale.product_price"
+        name="Ecotax on product page"
+    >
+        <xpath expr="//small[@t-if=&quot;combination_info.get('tax_disclaimer')&quot;]" position="before">
+            <div class="o_ecotax_amounts">
+                <t t-foreach="combination_info.get('ecotax_amounts', [])" t-as="ecotax">
+                    <div class="o_ecotax_line text-muted small">
+                        dont <t t-esc="ecotax['name']"/> :
+                        <span
+                            t-out="ecotax['amount']"
+                            t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+                        />
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- /shop/cart main cart lines: display ecotax unit amount below the line price -->
+    <template
+        id="cart_lines_price_ecotax"
+        inherit_id="website_sale.cart_lines_price"
+        name="Ecotax per cart line (main cart)"
+    >
+        <xpath expr="//h6[@name='website_sale_cart_line_price']" position="after">
+            <t t-set="ecotax_amounts" t-value="line._get_ecotax_amounts(website)"/>
+            <t t-foreach="ecotax_amounts" t-as="ecotax">
+                <div class="o_ecotax_line text-muted small text-end" style="white-space: nowrap;">
+                    dont <t t-esc="ecotax['name']"/> :
+                    <span t-out="ecotax['amount']"
+                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
