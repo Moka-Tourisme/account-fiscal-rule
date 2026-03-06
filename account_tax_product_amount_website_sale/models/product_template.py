@@ -30,7 +30,11 @@ class ProductTemplate(models.Model):
                 company=ta.company_id,
                 date=date,
             )
-            ecotax_amounts.append({'name': ta.tax_id.name, 'amount': amount})
+            ecotax_amounts.append({
+                'name': ta.tax_id.name,
+                'amount': amount,
+                'price_include_override': ta.tax_id.price_include_override,
+            })
 
         combination_info['ecotax_amounts'] = ecotax_amounts
         return combination_info

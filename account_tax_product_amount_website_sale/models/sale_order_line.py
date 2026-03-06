@@ -5,7 +5,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     def _get_ecotax_amounts(self, website):
-        """Return a list of {name, amount} for ecotaxes on this line, converted to website currency."""
+        """Return a list of {name, amount, price_include_override} for ecotaxes on this line, converted to website currency."""
         result = []
         currency = website.currency_id
         today = fields.Date.today()
@@ -18,5 +18,9 @@ class SaleOrderLine(models.Model):
                 company=ta.company_id,
                 date=today,
             )
-            result.append({'name': ta.tax_id.name, 'amount': amount})
+            result.append({
+                'name': ta.tax_id.name,
+                'amount': amount,
+                'price_include_override': ta.tax_id.price_include_override,
+            })
         return result

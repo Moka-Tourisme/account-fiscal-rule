@@ -5,7 +5,9 @@
     <template id="ecotax_amounts">
         <t t-foreach="ecotax_amounts" t-as="ecotax">
             <div class="o_ecotax_line text-muted small">
-                dont <t t-esc="ecotax['name']"/> :
+                <t t-if="ecotax.get('price_include_override') == 'tax_included'">dont</t>
+                <t t-else="">plus</t>
+                <t t-esc="ecotax['name']"/> :
                 <span t-out="ecotax['amount']"
                       t-options="{'widget': 'monetary', 'display_currency': currency}"/>
             </div>
@@ -22,7 +24,9 @@
             <div class="o_ecotax_amounts">
                 <t t-foreach="combination_info.get('ecotax_amounts', [])" t-as="ecotax">
                     <div class="o_ecotax_line text-muted small">
-                        dont <t t-esc="ecotax['name']"/> :
+                        <t t-if="ecotax.get('price_include_override') == 'tax_included'">dont</t>
+                        <t t-else="">plus</t>
+                        <t t-esc="ecotax['name']"/> :
                         <span
                             t-out="ecotax['amount']"
                             t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
@@ -43,7 +47,9 @@
             <t t-set="ecotax_amounts" t-value="line._get_ecotax_amounts(website)"/>
             <t t-foreach="ecotax_amounts" t-as="ecotax">
                 <div class="o_ecotax_line text-muted small text-end" style="white-space: nowrap;">
-                    dont <t t-esc="ecotax['name']"/> :
+                    <t t-if="ecotax.get('price_include_override') == 'tax_included'">dont</t>
+                    <t t-else="">plus</t>
+                    <t t-esc="ecotax['name']"/> :
                     <span t-out="ecotax['amount']"
                           t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                 </div>
