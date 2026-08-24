@@ -40,6 +40,10 @@ class AccountTax(models.Model):
             default_product_values, product
         )
         if product and product._name == "product.product":
+            # Tax computation may depend on restricted fields: the tax amounts
+            # and their tax are configuration records that portal users are not
+            # allowed to read. Core does the same in the overridden method.
+            product = product.sudo()
             product_values["fixed_tax_amounts"] = {}
             for tax_amount in product.tax_amount_ids:
                 if tax_amount.tax_id.use_product_amount:
