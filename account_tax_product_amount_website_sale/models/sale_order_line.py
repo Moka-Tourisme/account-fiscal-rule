@@ -9,7 +9,8 @@ class SaleOrderLine(models.Model):
         result = []
         currency = website.currency_id
         today = fields.Date.today()
-        for ta in self.product_id.tax_amount_ids.filtered(
+        # sudo: `account.tax` is not readable by portal users
+        for ta in self.sudo().product_id.tax_amount_ids.filtered(
             lambda t: t.type_tax_use == 'sale' and t.amount > 0
         ):
             amount = ta.company_id.currency_id._convert(

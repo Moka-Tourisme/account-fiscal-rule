@@ -8,7 +8,8 @@ class SaleOrder(models.Model):
         """Return a dict {tax_name: total_amount} for all ecotaxes in the order."""
         result = {}
         for line in self.website_order_line:
-            for ta in line.product_id.tax_amount_ids.filtered(
+            # sudo: `account.tax` is not readable by portal users
+            for ta in line.sudo().product_id.tax_amount_ids.filtered(
                 lambda t: t.type_tax_use == 'sale' and t.amount > 0
             ):
                 key = ta.tax_id.name

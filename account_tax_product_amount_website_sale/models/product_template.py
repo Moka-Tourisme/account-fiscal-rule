@@ -13,12 +13,15 @@ class ProductTemplate(models.Model):
 
         tax_amount_ids = self.env['account.tax.product.amount']
 
+        # Tax amounts and their tax are configuration records: portal users
+        # have no read access on `account.tax`, hence the sudo (same as core,
+        # which reads `product_or_template.sudo().taxes_id`).
         if product_or_template._name == 'product.product':
-            tax_amount_ids = product_or_template.tax_amount_ids
+            tax_amount_ids = product_or_template.sudo().tax_amount_ids
         else:
             variant = product_or_template.product_variant_ids[:1]
             if variant:
-                tax_amount_ids = variant.tax_amount_ids
+                tax_amount_ids = variant.sudo().tax_amount_ids
 
         ecotax_amounts = []
         for ta in tax_amount_ids.filtered(
